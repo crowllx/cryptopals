@@ -62,21 +62,24 @@ func ScoreList(strs []string) string {
 	}
 	return best_str
 }
-func SingleByteXor(input string) (key byte, output string) {
+func SingleByteXor(input string) (byte, string) {
 
 	best_score := 0
-	best_xor := new(string)
+	best_xor := ""
 	var best_key byte
 
-	hex, _ := hex.DecodeString(input)
+	hex, err := hex.DecodeString(input)
+	if err != nil {
+		panic(err)
+	}
 	for c := 0; c < 255; c++ {
 		xor := xor(hex, byte(c))
 		score := scoreXor(xor)
 		if score > best_score {
 			best_score = score
-			*best_xor = string(xor)
+			best_xor = string(xor)
 			best_key = byte(c)
 		}
 	}
-	return best_key, *best_xor
+	return best_key, best_xor
 }

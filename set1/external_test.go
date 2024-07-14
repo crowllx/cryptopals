@@ -2,6 +2,7 @@ package set1_test
 
 import (
 	"cryptopals/set1"
+	"encoding/hex"
 	"testing"
 )
 
@@ -40,4 +41,25 @@ func TestFixedXor(t *testing.T) {
 
 	t.Log("expected: ", expected)
 	t.Log("result: ", result)
+}
+
+func TestRepeatingXor(t *testing.T) {
+	expected := "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+	input := `Burning 'em, if you ain't quick and nimble
+I go crazy when I hear a cymbal`
+	key := "ICE"
+	xor := set1.RepeatingXor([]byte(input), []byte(key))
+
+	if hex.EncodeToString([]byte(xor)) != expected {
+		t.Fatalf(`
+			Result does not match
+			result: %s,
+			expected: %s
+			`, xor, expected)
+	}
+	t.Logf(`
+		result: %s,
+		expected: %s
+		`, hex.EncodeToString([]byte(xor)), expected)
+
 }
