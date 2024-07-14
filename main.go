@@ -27,6 +27,13 @@ func singleCharXor() {
 	fmt.Println(best)
 }
 
+func aesDecrypt() {
+	key := "YELLOW SUBMARINE"
+	ct, _ := os.ReadFile("./tests/aes-cipher.txt")
+
+	pt := set1.Decrypt([]byte(key), string(ct))
+	fmt.Println(pt)
+}
 func breakVignere() []byte {
 	dat, err := os.ReadFile("./tests/vignere.txt")
 	if err != nil {
@@ -43,5 +50,6 @@ func main() {
 	singleCharXor()
 	fmt.Println()
 	breakVignere()
+	aesDecrypt()
 
 }
