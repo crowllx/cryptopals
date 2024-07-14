@@ -26,7 +26,19 @@ func singleCharXor() {
 	best := set1.ScoreList(xors)
 	fmt.Println(best)
 }
+func detectAesECB() {
+	data, _ := os.ReadFile("./tests/aes-cipher2.txt")
+	cts := strings.Split(string(data), "\n")
 
+	for i, ct := range cts {
+		res := set1.DetectECB(ct)
+		if res {
+			fmt.Printf("%v\nct: %s\nindex: %d\n", res, ct, i)
+			return
+		}
+	}
+	fmt.Println("err")
+}
 func aesDecrypt() {
 	key := "YELLOW SUBMARINE"
 	ct, _ := os.ReadFile("./tests/aes-cipher.txt")
@@ -50,6 +62,6 @@ func main() {
 	singleCharXor()
 	fmt.Println()
 	breakVignere()
-	aesDecrypt()
-
+	// aesDecrypt()
+	detectAesECB()
 }
