@@ -3,16 +3,9 @@ package set1_test
 import (
 	"cryptopals/set1"
 	"encoding/hex"
-	"os"
 	"testing"
 )
 
-func TestAesDecrypt(t *testing.T) {
-	key := "YELLOW SUBMARINE"
-	ct := os.ReadFile("./tests/aes-cipher.txt")
-
-	pt := set1.Decrypt([]byte(key), string(ct))
-}
 func TestHexConversion(t *testing.T) {
 	expected := "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
 	input := "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"

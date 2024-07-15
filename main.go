@@ -2,6 +2,7 @@ package main
 
 import (
 	"cryptopals/set1"
+	"cryptopals/set2"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -58,10 +59,23 @@ func breakVignere() []byte {
 	// fmt.Println(set1.RepeatingXor(decoded, key))
 	return key
 }
+
+func set2tests() {
+	key := []byte("YELLOW SUBMARINE")
+	ct, _ := os.ReadFile("./tests/cbc-encrypted.txt")
+	fmt.Println(len(ct))
+	decoded, _ := base64.StdEncoding.WithPadding(base64.NoPadding).DecodeString(string(ct))
+	fmt.Println(len(decoded))
+	decrypted, _ := set2.Decrypt(decoded, key)
+	fmt.Printf("%s", string(decrypted))
+}
 func main() {
 	singleCharXor()
 	fmt.Println()
 	breakVignere()
 	// aesDecrypt()
 	detectAesECB()
+
+	fmt.Println()
+	set2tests()
 }
