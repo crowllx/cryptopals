@@ -1,4 +1,4 @@
-package set2
+package main
 
 import (
 	"bytes"
@@ -11,4 +11,8 @@ func Pksc7Pad(pt []byte, blockSize int) []byte {
 		pt = append(pt, bytes.Repeat([]byte{byte(padLen)}, padLen)...)
 	}
 	return pt
+}
+
+func ValidatePks7(pt []byte) {
+
 }

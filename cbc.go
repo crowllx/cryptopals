@@ -1,11 +1,11 @@
-package set2
+package main
 
 import (
 	"crypto/aes"
 	"errors"
 )
 
-func xor(a, b []byte) ([]byte, error) {
+func xorBlocks(a, b []byte) ([]byte, error) {
 	if len(a) != len(b) {
 		return nil, errors.New("xor error: lengths are not equivalent")
 	}
@@ -22,11 +22,11 @@ func Encrypt(pt []byte, key []byte, iv []byte) ([]byte, error) {
 	}
 	pt = Pksc7Pad(pt, 16)
 	ct := make([]byte, len(pt))
-	block, _ := xor(iv, pt[:16])
+	block, _ := xorBlocks(iv, pt[:16])
 	cipher, _ := aes.NewCipher(key)
 	cipher.Encrypt(ct[:16], block)
 	for bs, be := 16, 32; bs < len(pt); bs, be = bs+16, be+16 {
-		block, _ = xor(block, pt[bs:be])
+		block, _ = xorBlocks(block, pt[bs:be])
 		cipher.Encrypt(ct[bs:be], block)
 	}
 	return ct, nil
@@ -42,7 +42,7 @@ func Decrypt(ct []byte, key []byte, iv []byte) ([]byte, error) {
 	var pt []byte
 	for bs, be := 0, 16; bs < len(ct); bs, be = bs+16, be+16 {
 		cipher.Decrypt(ct[bs:be], ct[bs:be])
-		tmp, _ := xor(ct[bs:be], block)
+		tmp, _ := xorBlocks(ct[bs:be], block)
 		pt = append(pt, tmp...)
 		block = ct[bs:be]
 	}

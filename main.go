@@ -2,8 +2,6 @@ package main
 
 import (
 	"bytes"
-	"cryptopals/set1"
-	"cryptopals/set2"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
@@ -12,7 +10,8 @@ import (
 )
 
 func singleCharXor() {
-	key, xor := set1.SingleByteXor("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736")
+
+	key, xor := SingleByteXor("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736")
 	fmt.Println("char: ", key, "\nxor:", xor)
 
 	dat, err := os.ReadFile("./tests/single-char-xor.txt")
@@ -23,10 +22,10 @@ func singleCharXor() {
 
 	var xors []string
 	for _, s := range inputs {
-		_, xor = set1.SingleByteXor(s)
+		_, xor = SingleByteXor(s)
 		xors = append(xors, xor)
 	}
-	best := set1.ScoreList(xors)
+	best := ScoreList(xors)
 	fmt.Println(best)
 }
 func detectAesECB() {
@@ -35,7 +34,7 @@ func detectAesECB() {
 
 	for i, ct := range cts {
 		decoded, _ := hex.DecodeString(string(ct))
-		res := set1.DetectECB(string(decoded))
+		res := DetectECB(string(decoded))
 		if res {
 			fmt.Printf("%v\nct: %s\nindex: %d\n", res, ct, i)
 			return
@@ -47,7 +46,7 @@ func aesDecrypt() {
 	key := "YELLOW SUBMARINE"
 	ct, _ := os.ReadFile("./tests/aes-cipher.txt")
 
-	pt, _ := set1.ECBDecrypt([]byte(key), ct)
+	pt, _ := ECBDecrypt([]byte(key), ct)
 	fmt.Println(pt)
 }
 func breakVignere() []byte {
@@ -57,7 +56,7 @@ func breakVignere() []byte {
 	}
 	decoded, _ := base64.StdEncoding.WithPadding(base64.NoPadding).DecodeString(string(dat))
 	fmt.Println(len(decoded))
-	key := set1.BreakVigenere(string(decoded))
+	key := BreakVigenere(string(decoded))
 	fmt.Println(string(key))
 	// fmt.Println(set1.RepeatingXor(decoded, key))
 	return key
@@ -70,7 +69,7 @@ func set2tests() {
 	decoded, _ := base64.StdEncoding.WithPadding(base64.NoPadding).DecodeString(string(ct))
 	fmt.Println(len(decoded))
 	iv := bytes.Repeat([]byte("\x00"), 16)
-	decrypted, _ := set2.Decrypt(decoded, key, iv)
+	decrypted, _ := Decrypt(decoded, key, iv)
 	fmt.Printf("%s", string(decrypted))
 }
 
@@ -82,11 +81,11 @@ func identifyOracleMode() {
 	fmt.Println(len(pt[32:]))
 	pt += pt
 	fmt.Println(len(pt))
-	ct, err := set2.Oracle(pt)
+	ct, err := Oracle(pt)
 	if err != nil {
 		panic(err)
 	}
-	ecb := set1.DetectECB(ct)
+	ecb := DetectECB(ct)
 	fmt.Printf("ecb: %v\n", ecb)
 	if ecb {
 		fmt.Println("mode used was ECB")

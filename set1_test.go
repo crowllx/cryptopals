@@ -1,8 +1,7 @@
-package set1_test
+package main
 
 import (
 	"bytes"
-	"cryptopals/set1"
 	"encoding/hex"
 	"testing"
 )
@@ -10,7 +9,7 @@ import (
 func TestHexConversion(t *testing.T) {
 	expected := "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
 	input := "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
-	result, err := set1.Hex2base64(input)
+	result, err := Hex2base64(input)
 	if expected != result || err != nil {
 		t.Fatalf(`
         input: %s,
@@ -24,8 +23,8 @@ func TestHexConversion(t *testing.T) {
 func TestECB(t *testing.T) {
 	pt := []byte("hello world this is sample text")
 	key := []byte("YELLOW SUBMARINE")
-	ct, _ := set1.ECBEncrypt(key, pt)
-	decrypted, _ := set1.ECBDecrypt(key, ct)
+	ct, _ := ECBEncrypt(key, pt)
+	decrypted, _ := ECBDecrypt(key, ct)
 	if bytes.Equal(decrypted, pt) {
 		t.Fatalf("failed to encrypt/decrypt:\npt: %s\ndec: %s\n", pt, decrypted)
 	}
@@ -34,7 +33,7 @@ func TestFixedXor(t *testing.T) {
 	expected := "746865206b696420646f6e277420706c6179"
 	input1 := "1c0111001f010100061a024b53535009181c"
 	input2 := "686974207468652062756c6c277320657965"
-	result, err := set1.FixedXor(input1, input2)
+	result, err := FixedXor(input1, input2)
 
 	if err != nil {
 		t.Fatalf("%s", err)
@@ -57,7 +56,7 @@ func TestRepeatingXor(t *testing.T) {
 	input := `Burning 'em, if you ain't quick and nimble
 I go crazy when I hear a cymbal`
 	key := "ICE"
-	xor := set1.RepeatingXor([]byte(input), []byte(key))
+	xor := RepeatingXor([]byte(input), []byte(key))
 
 	if hex.EncodeToString([]byte(xor)) != expected {
 		t.Fatalf(`

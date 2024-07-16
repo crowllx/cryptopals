@@ -1,4 +1,4 @@
-package set1
+package main
 
 func RepeatingXor(plaintext []byte, key []byte) []byte {
 	key_len := len(key)

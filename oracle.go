@@ -1,7 +1,6 @@
-package set2
+package main
 
 import (
-	"cryptopals/set1"
 	"fmt"
 	"math/rand"
 )
@@ -41,7 +40,7 @@ func Oracle(input string) (string, error) {
 		ct = res
 	} else {
 		fmt.Println("ECB")
-		res, err := set1.ECBEncrypt(key, pt)
+		res, err := ECBEncrypt(key, pt)
 		if err != nil {
 			panic(err)
 		}
