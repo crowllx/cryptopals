@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"cryptopals/set1"
 	"cryptopals/set2"
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
@@ -32,7 +34,8 @@ func detectAesECB() {
 	cts := strings.Split(string(data), "\n")
 
 	for i, ct := range cts {
-		res := set1.DetectECB(ct)
+		decoded, _ := hex.DecodeString(string(ct))
+		res := set1.DetectECB(string(decoded))
 		if res {
 			fmt.Printf("%v\nct: %s\nindex: %d\n", res, ct, i)
 			return
@@ -44,7 +47,7 @@ func aesDecrypt() {
 	key := "YELLOW SUBMARINE"
 	ct, _ := os.ReadFile("./tests/aes-cipher.txt")
 
-	pt := set1.Decrypt([]byte(key), string(ct))
+	pt, _ := set1.ECBDecrypt([]byte(key), ct)
 	fmt.Println(pt)
 }
 func breakVignere() []byte {
@@ -66,8 +69,31 @@ func set2tests() {
 	fmt.Println(len(ct))
 	decoded, _ := base64.StdEncoding.WithPadding(base64.NoPadding).DecodeString(string(ct))
 	fmt.Println(len(decoded))
-	decrypted, _ := set2.Decrypt(decoded, key)
+	iv := bytes.Repeat([]byte("\x00"), 16)
+	decrypted, _ := set2.Decrypt(decoded, key, iv)
 	fmt.Printf("%s", string(decrypted))
+}
+
+func identifyOracleMode() {
+	pt := "some test data that is amazingthis is another block for whatever"
+	fmt.Println(pt[:16])
+	fmt.Println(pt[32:48])
+	fmt.Println(pt[32:])
+	fmt.Println(len(pt[32:]))
+	pt += pt
+	fmt.Println(len(pt))
+	ct, err := set2.Oracle(pt)
+	if err != nil {
+		panic(err)
+	}
+	ecb := set1.DetectECB(ct)
+	fmt.Printf("ecb: %v\n", ecb)
+	if ecb {
+		fmt.Println("mode used was ECB")
+	} else {
+		fmt.Println("mode used was probably CBC")
+	}
+
 }
 func main() {
 	singleCharXor()
@@ -77,5 +103,6 @@ func main() {
 	detectAesECB()
 
 	fmt.Println()
-	set2tests()
+	// set2tests()
+	identifyOracleMode()
 }

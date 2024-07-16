@@ -1,6 +1,7 @@
 package set1_test
 
 import (
+	"bytes"
 	"cryptopals/set1"
 	"encoding/hex"
 	"testing"
@@ -20,7 +21,15 @@ func TestHexConversion(t *testing.T) {
 	t.Log("expected: ", expected)
 	t.Log("result: ", result)
 }
-
+func TestECB(t *testing.T) {
+	pt := []byte("hello world this is sample text")
+	key := []byte("YELLOW SUBMARINE")
+	ct, _ := set1.ECBEncrypt(key, pt)
+	decrypted, _ := set1.ECBDecrypt(key, ct)
+	if bytes.Equal(decrypted, pt) {
+		t.Fatalf("failed to encrypt/decrypt:\npt: %s\ndec: %s\n", pt, decrypted)
+	}
+}
 func TestFixedXor(t *testing.T) {
 	expected := "746865206b696420646f6e277420706c6179"
 	input1 := "1c0111001f010100061a024b53535009181c"

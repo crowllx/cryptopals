@@ -16,11 +16,10 @@ func xor(a, b []byte) ([]byte, error) {
 	return buf, nil
 }
 
-func Encrypt(pt []byte, key []byte) ([]byte, error) {
+func Encrypt(pt []byte, key []byte, iv []byte) ([]byte, error) {
 	if len(key) != 16 {
 		return nil, errors.New("invalid key size")
 	}
-	iv := make([]byte, 16)
 	pt = Pksc7Pad(pt, 16)
 	ct := make([]byte, len(pt))
 	block, _ := xor(iv, pt[:16])
@@ -33,18 +32,19 @@ func Encrypt(pt []byte, key []byte) ([]byte, error) {
 	return ct, nil
 }
 
-func Decrypt(ct []byte, key []byte) ([]byte, error) {
-	if len(key) != 16 {
-		return nil, errors.New("invalid key size")
+func Decrypt(ct []byte, key []byte, iv []byte) ([]byte, error) {
+	if len(key) != 16 || len(iv) != 16 {
+		return nil, errors.New("invalid key or iv size")
 	}
-	iv := make([]byte, 16)
 	cipher, _ := aes.NewCipher(key)
+	block := make([]byte, 16)
+	copy(block, iv)
 	var pt []byte
 	for bs, be := 0, 16; bs < len(ct); bs, be = bs+16, be+16 {
 		cipher.Decrypt(ct[bs:be], ct[bs:be])
-		tmp, _ := xor(ct[bs:be], iv)
+		tmp, _ := xor(ct[bs:be], block)
 		pt = append(pt, tmp...)
-		iv = ct[bs:be]
+		block = ct[bs:be]
 	}
 	return pt, nil
 }

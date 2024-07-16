@@ -27,8 +27,9 @@ func TestCBC(t *testing.T) {
 	// currently decryption does not take into account pksc7 padding
 	pt := []byte("some test text!!\ndefinately work another 16 byte")
 	key := []byte("YELLOW SUBMARINE")
-	ct, _ := set2.Encrypt(pt, key)
-	decrypted, _ := set2.Decrypt(ct, key)
+	iv := bytes.Repeat([]byte("\x00"), 16)
+	ct, _ := set2.Encrypt(pt, key, iv)
+	decrypted, _ := set2.Decrypt(ct, key, iv)
 	fmt.Printf("pt: %s\n", pt)
 	fmt.Printf("dec: %s\n", decrypted)
 	if !bytes.Equal(pt, decrypted) {
